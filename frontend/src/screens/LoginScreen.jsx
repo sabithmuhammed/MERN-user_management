@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const LoginScreen = () => {
     const [email, setEmail] = useState("");
@@ -56,14 +57,25 @@ const LoginScreen = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     ></Form.Control>
                 </Form.Group>
-                <Button type="submit" varient="primary" className="mt-3">
-                    Sign In
-                </Button>
-                <Row className="py-3">
-                    <Col>
-                        New Customer? <Link to="/register">Register</Link>
-                    </Col>
-                </Row>
+                {isLoading ? (
+                    <Loader></Loader>
+                ) : (
+                    <>
+                        <Button
+                            type="submit"
+                            varient="primary"
+                            className="mt-3"
+                        >
+                            Sign In
+                        </Button>
+                        <Row className="py-3">
+                            <Col>
+                                New Customer?{" "}
+                                <Link to="/register">Register</Link>
+                            </Col>
+                        </Row>
+                    </>
+                )}
             </Form>
         </FormContainer>
     );

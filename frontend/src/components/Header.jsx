@@ -3,9 +3,23 @@ import { Container, Nav, Navbar, NavDropdown, Badge } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../slices/usersApiSlice";
+import { logout } from "../slices/authSlice";
 const Header = () => {
     const { userInfo } = useSelector((state) => state.auth);
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const [logoutApiCall] = useLogoutMutation();
+    const logoutHandler = async () => {
+        try {
+            const res = await logoutApiCall().unwrap()
+            dispatch(logout())
+            navigate('/')
+        } catch (error) {
+            
+        }
+    };
     return (
         <header>
             <Navbar expand="lg" bg="dark" data-bs-theme="dark">
@@ -25,7 +39,9 @@ const Header = () => {
                                                 Profile
                                             </NavDropdown.Item>
                                         </LinkContainer>
-                                        <NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            onClick={logoutHandler}
+                                        >
                                             Logout
                                         </NavDropdown.Item>
                                     </NavDropdown>
