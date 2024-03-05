@@ -24,7 +24,9 @@ const Header = () => {
         <header>
             <Navbar expand="lg" bg="dark" data-bs-theme="dark">
                 <Container>
+                    <LinkContainer to='/'>
                     <Navbar.Brand href="#home">User-Management</Navbar.Brand>
+                    </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">

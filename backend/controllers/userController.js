@@ -16,6 +16,7 @@ const authUser = asyncHandler(async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            image:user.image
         });
     } else {
         res.status(401);
@@ -30,6 +31,7 @@ const authUser = asyncHandler(async (req, res) => {
 //@access   Public
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
+    const image = req.file.filename;
 
     const userExist = await User.findOne({ email });
     if (userExist) {
@@ -40,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const user = await User.create({
         name,
         email,
+        image,
         password,
     });
 
@@ -49,6 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            image:user.image
         });
     } else {
         res.status(400);
@@ -67,27 +71,29 @@ const logoutUser = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "User logged out" });
 });
 
-//@desc     Get user profile
-//route     GET /api/users/profile
-//@access   Private
+// @desc     Get user profile
+// route     GET /api/users/profile
+// @access   Private
 const getUserProfile = asyncHandler(async (req, res) => {
     const user = {
         _id:req.user._id,
         name:req.user.name,
-        email:req.user.email
+        email:req.user.email,
+        image:req.user.image
     }
     res.status(200).json(user);
 });
 
-//@desc     Update user profile
-//route     PUT /api/users/profile
-//@access   Private
+// @desc     Update user profile
+// route     PUT /api/users/profile
+// @access   Private
 const updateUserProfile = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id)
 
     if(user){
         user.name = req.body.name || user.name
         user.email = req.body.email || user.email
+        user.image = req.file?.filename || user.image;
         if(req.body.password){
             user.password = req.body.password
         }
@@ -95,7 +101,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         res.status(200).json({
             _id:updatedUser._id,
             name:updatedUser.name,
-            email:updatedUser.email
+            email:updatedUser.email,
+            image:updatedUser.image
         })
     }else{ 
         res.status(404);

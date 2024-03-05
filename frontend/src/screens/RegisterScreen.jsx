@@ -1,20 +1,63 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import Loader from "../components/Loader";
+import { useRegisterMutation } from "../slices/usersApiSlice";
+import { setCredentials } from "../slices/authSlice";
 
 const RegisterScreen = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [cfrmPassword, setCfrmPassword] = useState("");
+    const { userInfo } = useSelector((state) => state.auth);
+    const [image,setImage] = useState(null);
+    const navigate = useNavigate();
+    const [register, { isLoading }] = useRegisterMutation();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate("/");
+        }
+    }, [navigate, userInfo]);
+    
+
     const submitHandler = async (e) => {
         e.preventDefault();
+        if (password !== cfrmPassword) {
+            toast.error("Passwords do not match");
+        } else {
+            try {
+                const res = await register({ name, email, password,image }).unwrap();
+                dispatch(setCredentials({ ...res }));
+            } catch (error) {
+                toast.error(error?.data?.message || error.error);
+            }
+        }
     };
     return (
         <FormContainer>
-            <h1>Sign In</h1>
+            <h1>Sign Up</h1>
             <Form onSubmit={submitHandler}>
+                <Form.Group className="my-2" controlId="image">
+                    <div className="image-div d-flex justify-content-between">
+                        <div className="image-preview">
+                        {image && <img src={ URL.createObjectURL(image)} alt="" />}
+                            
+                        </div>
+                        <div className="image-input flex-grow-1 ms-3">
+                            <Form.Label>Upload image</Form.Label>
+                            <Form.Control
+                                type="file"
+                                onChange={(e)=>setImage(e.target.files[0])}
+                            ></Form.Control>
+                        </div>
+                    </div>
+                </Form.Group>
                 <Form.Group className="my-2" controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control
@@ -51,14 +94,25 @@ const RegisterScreen = () => {
                         onChange={(e) => setCfrmPassword(e.target.value)}
                     ></Form.Control>
                 </Form.Group>
-                <Button type="submit" varient="primary" className="mt-3">
-                    Sign Up
-                </Button>
-                <Row className="py-3">
-                    <Col>
-                        Already have an account? <Link to="/login">Login</Link>
-                    </Col>
-                </Row>
+                {isLoading ? (
+                    <Loader></Loader>
+                ) : (
+                    <>
+                        <Button
+                            type="submit"
+                            varient="primary"
+                            className="mt-3"
+                        >
+                            Sign Up
+                        </Button>
+                        <Row className="py-3">
+                            <Col>
+                                Already have an account?{" "}
+                                <Link to="/login">Login</Link>
+                            </Col>
+                        </Row>
+                    </>
+                )}
             </Form>
         </FormContainer>
     );

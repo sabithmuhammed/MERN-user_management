@@ -10,7 +10,7 @@ const App = () => {
         <>
             <Header></Header>
             <ToastContainer></ToastContainer>
-            <Container>
+            <Container className="pb-2">
                 <Outlet></Outlet>
             </Container>
         </>
