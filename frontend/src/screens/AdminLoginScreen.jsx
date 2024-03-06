@@ -3,27 +3,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoginMutation } from "../slices/usersApiSlice";
-import { setCredentials } from "../slices/authSlice";
+import { useAdminLoginMutation } from "../slices/adminApiSlice";
+import { setCredentials } from "../slices/adminSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
-const LoginScreen = () => {
+const AdminLoginScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading }] = useAdminLoginMutation();
 
-    const { userInfo } = useSelector((state) => state.auth);
+    const { adminInfo } = useSelector((state) =>state.admin);
 
     useEffect(() => {
-        if (userInfo) {
-            navigate("/");
+        if (adminInfo) {
+            navigate("/admin/home");
         }
-    }, [navigate, userInfo]);
+    }, [navigate, adminInfo]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -75,4 +75,4 @@ const LoginScreen = () => {
     );
 };
 
-export default LoginScreen;
+export default AdminLoginScreen;

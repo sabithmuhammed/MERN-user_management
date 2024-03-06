@@ -38,3 +38,14 @@ body{
     color: white;
     
 }
+.tile-div{
+    width: 100%;
+    background-color: #894545 ;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 50px;
+    align-items: center;
+    border-radius: 10px;
+
+}
